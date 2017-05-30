@@ -59,6 +59,14 @@ public class MainActivity extends AppCompatActivity {
                 changeBackgroundColor(r, g, b);
             }
         });
+        Button resetButton = (Button) findViewById(R.id.reset);
+        resetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                r=g=b=0;
+                changeBackgroundColor(r,g,b);
+            }
+        });
 
 
 

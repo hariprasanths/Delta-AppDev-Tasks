@@ -11,21 +11,20 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
+    public static final String my_pref = "My Prefs File";
     int r, g, b;
     LinearLayout view;
-    public static final String my_pref="My Prefs File";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         view = (LinearLayout) findViewById(R.id.background);
-        SharedPreferences prefs = getSharedPreferences(my_pref,0);
-            r = prefs.getInt("r", 0);
-            g = prefs.getInt("g", 0);
-            b = prefs.getInt("b", 0);
-        changeBackgroundColor(r,g,b);
+        SharedPreferences prefs = getSharedPreferences(my_pref, 0);
+        r = prefs.getInt("r", 0);
+        g = prefs.getInt("g", 0);
+        b = prefs.getInt("b", 0);
+        changeBackgroundColor(r, g, b);
         ColorDrawable colorDrawable = (ColorDrawable) view.getBackground();
         int color = colorDrawable.getColor();
         r = Color.red(color);
@@ -63,11 +62,10 @@ public class MainActivity extends AppCompatActivity {
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                r=g=b=0;
-                changeBackgroundColor(r,g,b);
+                r = g = b = 0;
+                changeBackgroundColor(r, g, b);
             }
         });
-
 
 
     }
@@ -75,10 +73,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        SharedPreferences.Editor editor = getSharedPreferences(my_pref,0).edit();
-        editor.putInt("r",r);
-        editor.putInt("g",g);
-        editor.putInt("b",b);
+        SharedPreferences.Editor editor = getSharedPreferences(my_pref, 0).edit();
+        editor.putInt("r", r);
+        editor.putInt("g", g);
+        editor.putInt("b", b);
         editor.commit();
 
     }

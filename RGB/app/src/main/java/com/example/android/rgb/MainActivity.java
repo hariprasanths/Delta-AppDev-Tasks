@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
         r = Color.red(color);
         g = Color.green(color);
         b = Color.blue(color);
+        changeBackgroundColor(r,g,b);
         Button redButton = (Button) findViewById(R.id.red_button);
         redButton.setOnClickListener(new View.OnClickListener() {
                                          @Override

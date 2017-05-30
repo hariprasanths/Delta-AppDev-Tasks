@@ -1,5 +1,6 @@
 package com.example.android.rgb_hackermode;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
     int r, g, b;
     LinearLayout view;
+    public static final String my_pref="My Prefs File";
 
 
     @Override
@@ -19,6 +21,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         view = (LinearLayout) findViewById(R.id.background);
+        SharedPreferences prefs = getSharedPreferences(my_pref,0);
+            r = prefs.getInt("r", 0);
+            g = prefs.getInt("g", 0);
+            b = prefs.getInt("b", 0);
+        changeBackgroundColor(r,g,b);
         ColorDrawable colorDrawable = (ColorDrawable) view.getBackground();
         int color = colorDrawable.getColor();
         r = Color.red(color);
@@ -52,6 +59,19 @@ public class MainActivity extends AppCompatActivity {
                 changeBackgroundColor(r, g, b);
             }
         });
+
+
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        SharedPreferences.Editor editor = getSharedPreferences(my_pref,0).edit();
+        editor.putInt("r",r);
+        editor.putInt("g",g);
+        editor.putInt("b",b);
+        editor.commit();
 
     }
 

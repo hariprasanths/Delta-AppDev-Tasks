@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 r = progress;
-                changeBackgroundColor(r,g,b);
+                changeBackgroundColor(r, g, b);
             }
 
             @Override
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 g = progress;
-                changeBackgroundColor(r,g,b);
+                changeBackgroundColor(r, g, b);
             }
 
             @Override
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 b = progress;
-                changeBackgroundColor(r,g,b);
+                changeBackgroundColor(r, g, b);
             }
 
             @Override
@@ -104,8 +104,8 @@ public class MainActivity extends AppCompatActivity {
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                r=g=b=0;
-                changeBackgroundColor(r,g,b);
+                r = g = b = 0;
+                changeBackgroundColor(r, g, b);
                 redSeekBar.setProgress(r);
                 greenSeekBar.setProgress(g);
                 blueSeekBar.setProgress(b);

@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -19,19 +21,28 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         view = (LinearLayout) findViewById(R.id.background);
+        final SeekBar redSeekBar = (SeekBar) findViewById(R.id.red_seekbar);
+        redSeekBar.setMax(255);
+        final SeekBar greenSeekBar = (SeekBar) findViewById(R.id.green_seekbar);
+        greenSeekBar.setMax(255);
+        final SeekBar blueSeekBar = (SeekBar) findViewById(R.id.blue_seekbar);
+        blueSeekBar.setMax(255);
         SharedPreferences prefs = getSharedPreferences(my_pref, 0);
         r = prefs.getInt("r", 0);
         g = prefs.getInt("g", 0);
         b = prefs.getInt("b", 0);
+        redSeekBar.setProgress(r);
+        greenSeekBar.setProgress(g);
+        blueSeekBar.setProgress(b);
         changeBackgroundColor(r, g, b);
         ColorDrawable colorDrawable = (ColorDrawable) view.getBackground();
         int color = colorDrawable.getColor();
         r = Color.red(color);
         g = Color.green(color);
         b = Color.blue(color);
-        SeekBar redSeekBar = (SeekBar) findViewById(R.id.red_seekbar);
-        redSeekBar.setProgress(0);
-        redSeekBar.setMax(255);
+
+        redSeekBar.setProgress(r);
+
         redSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -50,9 +61,56 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        greenSeekBar.setProgress(g);
 
+        greenSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                g = progress;
+                changeBackgroundColor(r,g,b);
+            }
 
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
 
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        blueSeekBar.setProgress(b);
+
+        blueSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                b = progress;
+                changeBackgroundColor(r,g,b);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        Button resetButton = (Button) findViewById(R.id.reset);
+        resetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                r=g=b=0;
+                changeBackgroundColor(r,g,b);
+                redSeekBar.setProgress(r);
+                greenSeekBar.setProgress(g);
+                blueSeekBar.setProgress(b);
+            }
+        });
     }
 
     @Override

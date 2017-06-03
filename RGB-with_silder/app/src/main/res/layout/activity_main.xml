@@ -11,11 +11,12 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:gravity="center">
+        
         <SeekBar
             android:id="@+id/red_seekbar"
             android:layout_width="160dp"
             android:layout_height="wrap_content"
-            android:background="#fffefe"/>
+            android:background="#fffefe" />
         <TextView
             android:id="@+id/red_value"
             android:layout_width="26dp"
@@ -31,11 +32,11 @@
         android:layout_weight="1"
         android:gravity="center">
 
-        <Button
-            android:id="@+id/green_button"
-            android:layout_width="wrap_content"
+        <SeekBar
+            android:id="@+id/green_seekbar"
+            android:layout_width="160dp"
             android:layout_height="wrap_content"
-            android:text="@string/color_green" />
+            android:background="#fffefe"/>
 
         <TextView
             android:id="@+id/green_value"
@@ -51,11 +52,11 @@
         android:layout_weight="1"
         android:gravity="center">
 
-        <Button
-            android:id="@+id/blue_button"
-            android:layout_width="wrap_content"
+        <SeekBar
+            android:id="@+id/blue_seekbar"
+            android:layout_width="160dp"
             android:layout_height="wrap_content"
-            android:text="@string/color_blue" />
+            android:background="#fffefe"/>
 
         <TextView
             android:id="@+id/blue_value"

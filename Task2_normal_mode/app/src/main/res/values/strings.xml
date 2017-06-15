@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Task2_normal_mode</string>
+    <string name="add_pic_button">ADD PIC</string>
+    <string name="caption_hint">Enter the caption here</string>
+    <string name="enter_button">ENTER</string>
+    <string name="delete_button">Delete</string>
 </resources>

@@ -9,18 +9,18 @@ import android.graphics.Bitmap;
 public class ImageWithCaption {
     private Bitmap mimageResouseID;
     private String mcaption;
-    public ImageWithCaption(Bitmap imageResourseID,String caption)
-    {
+
+    public ImageWithCaption(Bitmap imageResourseID, String caption) {
         mimageResouseID = imageResourseID;
         mcaption = caption;
 
     }
-    public Bitmap getimageResouseID()
-    {
+
+    public Bitmap getimageResouseID() {
         return mimageResouseID;
     }
-    public  String getcaption()
-    {
+
+    public String getcaption() {
         return mcaption;
     }
 

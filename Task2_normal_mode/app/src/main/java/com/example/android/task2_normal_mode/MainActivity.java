@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                mode.getMenuInflater().inflate(R.menu.main_menu,menu);
+                mode.getMenuInflater().inflate(R.menu.main_menu, menu);
                 return true;
             }
 
@@ -129,14 +129,14 @@ public class MainActivity extends AppCompatActivity {
 
                         for (int i = (selected.size() - 1); i >= 0; i--) {
                             if (selected.valueAt(i)) {
-                                if(flag == index) {
+                                if (flag == index) {
                                     ImageWithCaption selecteditem = adaptor.getItem(selected.keyAt(i));
                                     imagesWithCaption.remove(selecteditem);
                                     adaptor.notifyDataSetChanged();
                                     flag--;
                                     index--;
-                                }
-                                else Toast.makeText(getApplicationContext(),"First fill the list completely!",Toast.LENGTH_SHORT).show();
+                                } else
+                                    Toast.makeText(getApplicationContext(), "First fill the list completely!", Toast.LENGTH_SHORT).show();
                             }
                         }
                         mode.finish();

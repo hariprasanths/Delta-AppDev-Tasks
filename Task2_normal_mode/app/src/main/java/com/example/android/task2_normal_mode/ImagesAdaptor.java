@@ -20,7 +20,8 @@ import java.util.List;
 public class ImagesAdaptor extends ArrayAdapter<ImageWithCaption> {
     ImageWithCaption currentImageWithCaption;
     private SparseBooleanArray mSelectedItemsIds;
-    public ImagesAdaptor(@NonNull Context context,@NonNull List<ImageWithCaption> objects) {
+
+    public ImagesAdaptor(@NonNull Context context, @NonNull List<ImageWithCaption> objects) {
         super(context, 0, objects);
         mSelectedItemsIds = new SparseBooleanArray();
     }
@@ -29,8 +30,8 @@ public class ImagesAdaptor extends ArrayAdapter<ImageWithCaption> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View listItemView = convertView;
-        if(listItemView == null)
-            listItemView = LayoutInflater.from(getContext()).inflate(R.layout.list_item,parent,false);
+        if (listItemView == null)
+            listItemView = LayoutInflater.from(getContext()).inflate(R.layout.list_item, parent, false);
         currentImageWithCaption = getItem(position);
         ImageView imageView = (ImageView) listItemView.findViewById(R.id.image_view);
         imageView.setImageBitmap(currentImageWithCaption.getimageResouseID());

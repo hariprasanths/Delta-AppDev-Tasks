@@ -13,6 +13,7 @@ public class ImageWithCaption {
     {
         mimageResouseID = imageResourseID;
         mcaption = caption;
+
     }
     public Bitmap getimageResouseID()
     {
@@ -22,4 +23,5 @@ public class ImageWithCaption {
     {
         return mcaption;
     }
+
 }

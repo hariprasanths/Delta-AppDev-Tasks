@@ -8,7 +8,12 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+import android.util.SparseBooleanArray;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -36,19 +41,20 @@ public class MainActivity extends AppCompatActivity {
     Bitmap capturedImage;
     Bitmap selectedImage;
     int flagForIntentPhoto = 0;
-    int index = 0,flag = 0;
+    int index = 0, flag = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         addButton = (Button) findViewById(R.id.add_button);
         imagesList = (ListView) findViewById(R.id.list_view);
-        adaptor = new ImagesAdaptor(this,imagesWithCaption);
+        adaptor = new ImagesAdaptor(this, imagesWithCaption);
         imagesList.setAdapter(adaptor);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(index == flag) {
+                if (index == flag) {
 
                     colors = new CharSequence[]{"Camera", "Gallery"};
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -69,8 +75,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                     builder.show();
-                }
-                else Toast.makeText(getApplicationContext(),"First add the caption!",Toast.LENGTH_SHORT).show();
+                } else
+                    Toast.makeText(getApplicationContext(), "First add the caption!", Toast.LENGTH_SHORT).show();
             }
         });
         captionButton = (Button) findViewById(R.id.caption_button);
@@ -78,29 +84,83 @@ public class MainActivity extends AppCompatActivity {
         captionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(flag == (index-1)) {
+                if (flag == (index - 1)) {
                     captionText = captionTextbox.getText().toString();
-                    if(flagForIntentPhoto==0)
-                    imagesWithCaption.set(flag, new ImageWithCaption(capturedImage,captionText));
-                    else imagesWithCaption.set(flag, new ImageWithCaption(selectedImage,captionText));
+                    if (flagForIntentPhoto == 0)
+                        imagesWithCaption.set(flag, new ImageWithCaption(capturedImage, captionText));
+                    else
+                        imagesWithCaption.set(flag, new ImageWithCaption(selectedImage, captionText));
                     adaptor.notifyDataSetChanged();
                     flag++;
                     captionTextbox.getText().clear();
-                }
-                else {
+                } else {
                     Toast.makeText(getApplicationContext(), "First add the image!", Toast.LENGTH_SHORT).show();
                     captionTextbox.getText().clear();
                 }
             }
         });
-}
+        imagesList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        imagesList.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+            @Override
+            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+                int checkedCount = imagesList.getCheckedItemCount();
+                mode.setTitle(checkedCount + " Selected");
+                adaptor.toggleSelection(position);
+                adaptor.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                mode.getMenuInflater().inflate(R.menu.main_menu,menu);
+                return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.delete:
+                        SparseBooleanArray selected = adaptor.getSelectedIds();
+
+                        for (int i = (selected.size() - 1); i >= 0; i--) {
+                            if (selected.valueAt(i)) {
+                                if(flag == index) {
+                                    ImageWithCaption selecteditem = adaptor.getItem(selected.keyAt(i));
+                                    imagesWithCaption.remove(selecteditem);
+                                    adaptor.notifyDataSetChanged();
+                                    flag--;
+                                    index--;
+                                }
+                                else Toast.makeText(getApplicationContext(),"First fill the list completely!",Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        mode.finish();
+                        return true;
+
+                    default:
+                        return false;
+                }
+
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+                adaptor.removeSelection();
+            }
+        });
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
-        switch(requestCode) {
+        switch (requestCode) {
             case 0:
-                if(resultCode == RESULT_OK){
+                if (resultCode == RESULT_OK) {
                     capturedImage = (Bitmap) imageReturnedIntent.getExtras().get("data");
                     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                     capturedImage.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
@@ -117,15 +177,15 @@ public class MainActivity extends AppCompatActivity {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    imagesWithCaption.add(index,new ImageWithCaption(capturedImage,"Add caption"));
+                    imagesWithCaption.add(index, new ImageWithCaption(capturedImage, "Add caption"));
                     adaptor.notifyDataSetChanged();
                     index++;
                 }
 
                 break;
             case 1:
-                if(resultCode == RESULT_OK){
-                    selectedImage=null;
+                if (resultCode == RESULT_OK) {
+                    selectedImage = null;
                     if (imageReturnedIntent != null) {
                         try {
                             selectedImage = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), imageReturnedIntent.getData());
@@ -133,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     }
-                    imagesWithCaption.add(index,new ImageWithCaption(selectedImage,"Add caption"));
+                    imagesWithCaption.add(index, new ImageWithCaption(selectedImage, "Add caption"));
                     adaptor.notifyDataSetChanged();
                     index++;
                 }

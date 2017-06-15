@@ -20,7 +20,7 @@
         android:id="@+id/add_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ADD"/>
+        android:text="ADD PIC"/>
     <EditText
         android:id="@+id/caption_textbox"
         android:layout_width="0dp"
@@ -31,7 +31,7 @@
         android:id="@+id/caption_button"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:text="+"/>
+        android:text="Enter"/>
     </LinearLayout>
 
 

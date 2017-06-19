@@ -6,6 +6,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -26,16 +27,21 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    ArrayList<ImageWithCaption> imagesWithCaption = new ArrayList<>();
+    ArrayList<ImageWithCaption> imagesWithCaption;
     ImagesAdaptor adaptor;
     Button addButton;
     ListView imagesList;
@@ -54,6 +60,9 @@ public class MainActivity extends AppCompatActivity {
     ImageWithCaption selecteditem;
     int indexForCropIntent;
     int flagForPermissions = -1;
+    public static final String ARRAYLIST = null;
+    public static final String PREFS_NAME = "my_prefs";
+
 
 
     @Override
@@ -62,8 +71,24 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         addButton = (Button) findViewById(R.id.add_button);
         imagesList = (ListView) findViewById(R.id.list_view);
+
+        imagesWithCaption = new ArrayList<>();
+
+        SharedPreferences sharedPrefs = getSharedPreferences(PREFS_NAME,9);
+
+        Gson gson = new Gson();
+        String json = sharedPrefs.getString(ARRAYLIST, null);
+        if (json != null) {
+                Type type = new TypeToken<List<ImageWithCaption>>(){}.getType();
+                imagesWithCaption = gson.fromJson(json, type);   //Problem with this line
+                index = sharedPrefs.getInt("i", 0);
+                flag = sharedPrefs.getInt("f", 0);
+
+            }
+
         adaptor = new ImagesAdaptor(this, imagesWithCaption);
         imagesList.setAdapter(adaptor);
+
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -204,6 +229,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SharedPreferences sharedPrefs = getSharedPreferences(PREFS_NAME,9);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        Gson gson = new Gson();
+        editor.putInt("i",index);
+        editor.putInt("f",flag);
+
+            String json = gson.toJson(imagesWithCaption);  // problem with this line
+            editor.putString(ARRAYLIST, json);
+
+
+
+        editor.commit();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
         switch (requestCode) {
@@ -254,6 +296,7 @@ public class MainActivity extends AppCompatActivity {
                     adaptor.notifyDataSetChanged();
                     File file = new File(path);
                     file.delete();
+
                 }
         }
     }

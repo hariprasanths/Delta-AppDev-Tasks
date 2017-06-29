@@ -9,6 +9,9 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -42,6 +45,15 @@ public class MainActivity extends AppCompatActivity {
                 searchInputBox.getText().clear();
             }
         });
+    }
+    void displayResults(String name,int height,int weight)
+    {
+        String result = "Name: " + name + "\nHeight: " + height + "\nWeight: " + weight;
+        resultTextView.setText(result);
+    }
+    void displayResults(String msg)
+    {
+        resultTextView.setText(msg);
     }
 
     private class PokemonAsyncTask extends AsyncTask<String,Void,String>
@@ -95,10 +107,27 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String response) {
             super.onPostExecute(response);
-            if(response == null)
-                response = "Error loading Info";
+            String name = "-";
+            int height = 0;
+            int weight = 0;
             progressBar.setVisibility(View.GONE);
-            resultTextView.setText(response);
+            if(response == null) {
+                response = "Error loading Info!!";
+                displayResults(response);
+            }
+            else {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    name = jsonObject.optString("name");
+                    height = jsonObject.optInt("height");
+                    weight = jsonObject.optInt("weight");
+
+                } catch (JSONException e) {
+
+                }
+
+                displayResults(name, height, weight);
+            }
         }
     }
 }

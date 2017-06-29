@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -46,9 +47,13 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 searchInputBox = (EditText) findViewById(R.id.search_inputbox);
                 pokemonName = searchInputBox.getText().toString();
-                PokemonAsyncTask task = new PokemonAsyncTask();
-                task.execute();
-                searchInputBox.getText().clear();
+                if (pokemonName.equals(""))
+                    Toast.makeText(getApplicationContext(), "Enter a valid name!", Toast.LENGTH_SHORT).show();
+                else {
+                    PokemonAsyncTask task = new PokemonAsyncTask();
+                    task.execute();
+                    searchInputBox.getText().clear();
+                }
             }
         });
     }
@@ -116,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String response) {
             super.onPostExecute(response);
-            String name = "-";
+            String name = "";
             int height = 0;
             int weight = 0;
             String sprite = "";
@@ -141,7 +146,6 @@ public class MainActivity extends AppCompatActivity {
                 } catch (JSONException e) {
 
                 }
-
                 displayResults(name, height, weight, sprite, type);
             }
         }

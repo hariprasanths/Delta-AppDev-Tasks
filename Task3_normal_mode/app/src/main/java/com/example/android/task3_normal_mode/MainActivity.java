@@ -6,9 +6,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -27,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     Button searchButton;
     String pokemonName;
     ProgressBar progressBar;
+    ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         resultTextView = (TextView) findViewById(R.id.result_textview);
         searchButton = (Button) findViewById(R.id.button);
+        imageView = (ImageView) findViewById(R.id.image_view);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -46,10 +52,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    void displayResults(String name,int height,int weight)
+    void displayResults(String name,int height,int weight,String sprite,String type)
     {
-        String result = "Name: " + name + "\nHeight: " + height + "\nWeight: " + weight;
+        String result = "Name: " + name + "\nHeight: " + height + "\nWeight: " + weight + "\nType: " + type;
         resultTextView.setText(result);
+        Glide.with(getApplicationContext()).load(sprite).override(500,500).into(imageView);
+        imageView.setVisibility(View.VISIBLE);
     }
     void displayResults(String msg)
     {
@@ -63,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
             super.onPreExecute();
             progressBar.setVisibility(View.VISIBLE);
             resultTextView.setText("");
+            imageView.setVisibility(View.GONE);
         }
 
         @Override
@@ -110,6 +119,8 @@ public class MainActivity extends AppCompatActivity {
             String name = "-";
             int height = 0;
             int weight = 0;
+            String sprite = "";
+            String type = "";
             progressBar.setVisibility(View.GONE);
             if(response == null) {
                 response = "Error loading Info!!";
@@ -121,12 +132,17 @@ public class MainActivity extends AppCompatActivity {
                     name = jsonObject.optString("name");
                     height = jsonObject.optInt("height");
                     weight = jsonObject.optInt("weight");
-
+                    JSONObject sprites = jsonObject.getJSONObject("sprites");
+                    sprite = sprites.getString("front_default");
+                    JSONArray typeArray = jsonObject.getJSONArray("types");
+                    JSONObject typeArrayJSONObject = typeArray.getJSONObject(0);
+                    JSONObject typeJSONObject = typeArrayJSONObject.getJSONObject("type");
+                    type = typeJSONObject.optString("name");
                 } catch (JSONException e) {
 
                 }
 
-                displayResults(name, height, weight);
+                displayResults(name, height, weight, sprite, type);
             }
         }
     }

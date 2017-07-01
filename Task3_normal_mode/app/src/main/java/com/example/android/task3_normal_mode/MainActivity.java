@@ -25,6 +25,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 
+
 public class MainActivity extends AppCompatActivity {
 
     TextView resultTextView;
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     String pokemonName;
     ProgressBar progressBar;
     ImageView imageView;
+    String typesName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,20 +59,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    void displayResults(String name,int height,int weight,String sprite,String type)
-    {
-        String result = "Name: " + name + "\nHeight: " + height + "\nWeight: " + weight + "\nType: " + type;
+
+    void displayResults(String name, int height, int weight, String sprite, String type) {
+        String result = "Name: " + name + "\nHeight: " + height + "\nWeight: " + weight + "\nTypes: " + type;
         resultTextView.setText(result);
-        Glide.with(getApplicationContext()).load(sprite).override(500,500).into(imageView);
+        Glide.with(getApplicationContext()).load(sprite).override(500, 500).into(imageView);
         imageView.setVisibility(View.VISIBLE);
     }
-    void displayResults(String msg)
-    {
+
+    void displayResults(String msg) {
         resultTextView.setText(msg);
     }
 
-    private class PokemonAsyncTask extends AsyncTask<String,Void,String>
-    {
+    private class PokemonAsyncTask extends AsyncTask<String, Void, String> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -80,21 +81,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected String doInBackground(String... params)  {
+        protected String doInBackground(String... params) {
             URL url = null;
             HttpURLConnection urlConnection = null;
             StringBuilder output = new StringBuilder();
             String jsonResponse = "";
-            try{
+            try {
                 url = new URL("http://pokeapi.co/api/v2/pokemon/" + pokemonName);
-            }
-            catch(MalformedURLException e)
-            {
-                 return null;
+            } catch (MalformedURLException e) {
+                return null;
             }
 
-            try
-            {
+            try {
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setReadTimeout(10000);
                 urlConnection.setConnectTimeout(15000);
@@ -103,16 +101,15 @@ public class MainActivity extends AppCompatActivity {
                 InputStreamReader inputStreamReader = new InputStreamReader(urlConnection.getInputStream(), Charset.forName("UTF-8"));
                 BufferedReader reader = new BufferedReader(inputStreamReader);
                 String line = reader.readLine();
-                if(line != null)
+                if (line != null)
                     output.append(line);
                 reader.close();
                 jsonResponse = output.toString();
 
-            }catch (IOException e)
-            {
-                 return null;
-            }finally {
-                if(urlConnection != null)
+            } catch (IOException e) {
+                return null;
+            } finally {
+                if (urlConnection != null)
                     urlConnection.disconnect();
             }
             return jsonResponse;
@@ -125,13 +122,12 @@ public class MainActivity extends AppCompatActivity {
             int height = 0;
             int weight = 0;
             String sprite = "";
-            String type = "";
+            typesName = "";
             progressBar.setVisibility(View.GONE);
-            if(response == null) {
+            if (response == null) {
                 response = "Error loading Info!!";
                 displayResults(response);
-            }
-            else {
+            } else {
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     name = jsonObject.optString("name");
@@ -140,13 +136,18 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject sprites = jsonObject.getJSONObject("sprites");
                     sprite = sprites.getString("front_default");
                     JSONArray typeArray = jsonObject.getJSONArray("types");
-                    JSONObject typeArrayJSONObject = typeArray.getJSONObject(0);
-                    JSONObject typeJSONObject = typeArrayJSONObject.getJSONObject("type");
-                    type = typeJSONObject.optString("name");
+                    for (int i = 0; i < typeArray.length(); i++) {
+                        JSONObject typeArrayJSONObject = typeArray.getJSONObject(i);
+                        JSONObject typeJSONObject = typeArrayJSONObject.getJSONObject("type");
+                        if (i == typeArray.length() - 1)
+                            typesName += typeJSONObject.optString("name") + "\n             ";
+                        else typesName += typeJSONObject.optString("name") + ",\n             ";
+                    }
+
                 } catch (JSONException e) {
 
                 }
-                displayResults(name, height, weight, sprite, type);
+                displayResults(name, height, weight, sprite, typesName);
             }
         }
     }

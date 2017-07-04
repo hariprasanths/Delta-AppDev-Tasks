@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void displayResults(String name, int height, int weight, String sprite, String type) {
-        String result = "Name: " + name + "\nHeight: " + height + "\nWeight: " + weight + "\nTypes: " + type;
+        String result = "Name: " + name + "\nHeight: " + height + " feet"+ "\nWeight: " + weight + " lbs"+ "\nTypes: " + type;
         resultTextView.setText(result);
         Glide.with(getApplicationContext()).load(sprite).override(500, 500).into(imageView);
         imageView.setVisibility(View.VISIBLE);

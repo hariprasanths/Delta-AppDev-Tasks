@@ -90,7 +90,7 @@ public class PokeProvider extends ContentProvider {
                 long rowId = sqLiteDatabase.insert(PokeEntry.TABLE_NAME,null,values);
                 return ContentUris.withAppendedId(uri,rowId);
             default:
-                throw new IllegalArgumentException("NO" + uriMatcher.match(uri) + uri );
+                throw new IllegalArgumentException();
 
         }
 
@@ -99,18 +99,20 @@ public class PokeProvider extends ContentProvider {
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
 
-        SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
+
 
         int rowsDeleted;
         switch(uriMatcher.match(uri))
         {
             case POKEMONS:
+                SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
                 rowsDeleted = sqLiteDatabase.delete(PokeEntry.TABLE_NAME,selection,selectionArgs);
                 break;
             case POKEMONS_ID:
+                SQLiteDatabase database = dbHelper.getWritableDatabase();
                 selection = PokeEntry._ID + "=?";
                 selectionArgs = new String[] {String.valueOf(ContentUris.parseId(uri))};
-                rowsDeleted = sqLiteDatabase.delete(PokeEntry.TABLE_NAME,selection,selectionArgs);
+                rowsDeleted = database.delete(PokeEntry.TABLE_NAME,selection,selectionArgs);
                 break;
             default:
                 throw new IllegalArgumentException();
@@ -124,6 +126,7 @@ public class PokeProvider extends ContentProvider {
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
+
 
         return 0;
     }

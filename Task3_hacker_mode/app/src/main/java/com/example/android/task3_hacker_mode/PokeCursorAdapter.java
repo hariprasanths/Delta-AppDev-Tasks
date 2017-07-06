@@ -2,6 +2,7 @@ package com.example.android.task3_hacker_mode;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +18,13 @@ import com.example.android.task3_hacker_mode.Data.PokeContract;
  */
 
 public class PokeCursorAdapter extends CursorAdapter {
+
+    SparseBooleanArray mSelectedIds;
+
     public PokeCursorAdapter(Context context, Cursor c) {
         super(context, c, 0);
+        mSelectedIds = new SparseBooleanArray();
+
     }
 
     @Override
@@ -39,4 +45,29 @@ public class PokeCursorAdapter extends CursorAdapter {
         pokeNameView.setText(pokeName);
         Glide.with(context).load(pokeImage).override(500, 500).into(pokeImageView);
     }
+
+    public void toggleSelection(int position)
+    {
+        selectView(position, !mSelectedIds.get(position));
+    }
+    private void selectView(int position, Boolean value)
+    {
+        if(value)
+        {
+            mSelectedIds.put(position, value);
+        }
+        else
+            mSelectedIds.delete(position);
+        notifyDataSetChanged();
+    }
+    public void removeSelection()
+    {
+        mSelectedIds = new SparseBooleanArray();
+        notifyDataSetChanged();
+    }
+    public SparseBooleanArray getSelectedIds()
+    {
+        return mSelectedIds;
+    }
+
 }

@@ -15,7 +15,7 @@ public class PokeContract {
 
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
-    public static final String POKE_PATH = "task3_hacker_mode";
+    public static final String POKE_PATH = "pokemons";
 
     public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI,POKE_PATH);
 

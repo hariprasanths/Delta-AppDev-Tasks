@@ -1,15 +1,21 @@
 package com.example.android.task3_hacker_mode;
 
+import android.content.ContentUris;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.util.SparseBooleanArray;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AbsListView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.android.task3_hacker_mode.Data.PokeContract;
 
@@ -26,6 +32,58 @@ public class History extends AppCompatActivity implements LoaderManager.LoaderCa
         pokeListView = (ListView) findViewById(R.id.list);
         pokeCursorAdapter = new PokeCursorAdapter(this,null);
         pokeListView.setAdapter(pokeCursorAdapter);
+        pokeListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        pokeListView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+            @Override
+            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+
+                int checkedCount = pokeListView.getCheckedItemCount();
+                mode.setTitle(checkedCount + " item selected");
+                pokeCursorAdapter.toggleSelection(position);
+                pokeCursorAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                mode.getMenuInflater().inflate(R.menu.menu_selected,menu);
+                return  true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                Uri currentUri;
+                switch(item.getItemId())
+                {
+                    case R.id.delete_button:
+                        SparseBooleanArray selectedids = pokeCursorAdapter.getSelectedIds();
+                        for(int i = (selectedids.size() - 1); i >= 0 ; i--)
+                        {
+                            if(selectedids.valueAt(i))
+                            {
+                                currentUri = ContentUris.withAppendedId(PokeContract.CONTENT_URI,selectedids.keyAt(i) + 1);
+                                int j = getContentResolver().delete(currentUri,null,null);
+                                pokeCursorAdapter.notifyDataSetChanged();
+                            }
+                        }
+                    mode.finish();
+                    return true;
+                    default:
+                        return  false;
+                }
+
+
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+                 pokeCursorAdapter.removeSelection();
+            }
+        });
         getSupportLoaderManager().initLoader(0, null, this);
     }
 
@@ -41,11 +99,9 @@ public class History extends AppCompatActivity implements LoaderManager.LoaderCa
 
         switch(item.getItemId())
         {
-            case R.id.delete_button:
-                return true;
-
             case R.id.delete_all_button:
-
+                getContentResolver().delete(PokeContract.CONTENT_URI,null,null);
+                Toast.makeText(getApplicationContext(),"HISTORY has been deleted",Toast.LENGTH_SHORT).show();
                 return true;
             case android.R.id.home:
                 NavUtils.navigateUpFromSameTask(this);

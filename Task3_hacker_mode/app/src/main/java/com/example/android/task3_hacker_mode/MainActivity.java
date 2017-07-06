@@ -1,5 +1,6 @@
 package com.example.android.task3_hacker_mode;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.android.task3_hacker_mode.Data.PokeContract;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,7 +31,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity  {
 
     TextView resultTextView;
     EditText searchInputBox;
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView imageView;
     String typesName;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         resultTextView = (TextView) findViewById(R.id.result_textview);
         searchButton = (Button) findViewById(R.id.button);
         imageView = (ImageView) findViewById(R.id.image_view);
+
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
     }
 
     void displayResults(String name, int height, int weight, String sprite, String type) {
@@ -73,6 +78,17 @@ public class MainActivity extends AppCompatActivity {
     void displayResults(String msg) {
         resultTextView.setText(msg);
     }
+
+    void insertPokeIntoDb(String name,String imageurl)
+    {
+        ContentValues values = new ContentValues();
+        values.put(PokeContract.PokeEntry.COLUMN_POKE_NAME,name);
+        values.put(PokeContract.PokeEntry.COLUMN_POKE_IMAGE,imageurl);
+        getContentResolver().insert(PokeContract.CONTENT_URI,values);
+
+    }
+
+
 
     private class PokemonAsyncTask extends AsyncTask<String, Void, String> {
         @Override
@@ -151,6 +167,7 @@ public class MainActivity extends AppCompatActivity {
 
                 }
                 displayResults(name, height, weight, sprite, typesName);
+                insertPokeIntoDb(name,sprite);
             }
         }
     }

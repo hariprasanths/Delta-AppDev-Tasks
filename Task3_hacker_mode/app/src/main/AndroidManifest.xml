@@ -28,6 +28,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
+        <provider
+            android:name=".Data.PokeProvider"
+            android:authorities="com.example.android.task3_hacker_mode"
+            android:exported="false" />
     </application>
 
 </manifest>

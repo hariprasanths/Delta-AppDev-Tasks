@@ -10,16 +10,15 @@ import android.provider.BaseColumns;
 
 public class PokeContract {
 
-    PokeContract(){}
     public static final String CONTENT_AUTHORITY = "com.example.android.task3_hacker_mode";
-
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
-
     public static final String POKE_PATH = "pokemons";
+    public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, POKE_PATH);
 
-    public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI,POKE_PATH);
+    PokeContract() {
+    }
 
-    public static final class PokeEntry implements BaseColumns{
+    public static final class PokeEntry implements BaseColumns {
 
         public final static String TABLE_NAME = "pokemons";
         public final static String _ID = BaseColumns._ID;

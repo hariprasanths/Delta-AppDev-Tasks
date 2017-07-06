@@ -23,14 +23,12 @@ public class PokeProvider extends ContentProvider {
 
     final static UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
-    PokeDbHelper dbHelper ;
-
     static {
-        uriMatcher.addURI(PokeContract.CONTENT_AUTHORITY,PokeContract.POKE_PATH,POKEMONS);
-        uriMatcher.addURI(PokeContract.CONTENT_AUTHORITY,PokeContract.POKE_PATH + "/#",POKEMONS_ID);
+        uriMatcher.addURI(PokeContract.CONTENT_AUTHORITY, PokeContract.POKE_PATH, POKEMONS);
+        uriMatcher.addURI(PokeContract.CONTENT_AUTHORITY, PokeContract.POKE_PATH + "/#", POKEMONS_ID);
     }
 
-
+    PokeDbHelper dbHelper;
 
     @Override
     public boolean onCreate() {
@@ -44,22 +42,21 @@ public class PokeProvider extends ContentProvider {
 
         SQLiteDatabase sqLiteDatabase = dbHelper.getReadableDatabase();
 
-        Cursor cursor ;
-        switch (uriMatcher.match(uri))
-        {
+        Cursor cursor;
+        switch (uriMatcher.match(uri)) {
             case POKEMONS:
-                cursor = sqLiteDatabase.query(PokeEntry.TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
+                cursor = sqLiteDatabase.query(PokeEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
 
             case POKEMONS_ID:
                 selection = PokeEntry._ID + "=?";
-                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri))};
-                cursor = sqLiteDatabase.query(PokeEntry.TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+                cursor = sqLiteDatabase.query(PokeEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             default:
                 throw new IllegalArgumentException();
         }
-        cursor.setNotificationUri(getContext().getContentResolver(),uri);
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
         return cursor;
     }
 
@@ -67,12 +64,11 @@ public class PokeProvider extends ContentProvider {
     @Override
     public String getType(@NonNull Uri uri) {
 
-        switch(uriMatcher.match(uri))
-        {
+        switch (uriMatcher.match(uri)) {
             case POKEMONS:
                 return PokeEntry.CONTENT_LIST_TYPE;
             case POKEMONS_ID:
-                return  PokeEntry.CONTENT_ITEM_TYPE;
+                return PokeEntry.CONTENT_ITEM_TYPE;
             default:
                 throw new IllegalStateException();
         }
@@ -83,12 +79,11 @@ public class PokeProvider extends ContentProvider {
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
 
-        switch(uriMatcher.match(uri))
-        {
+        switch (uriMatcher.match(uri)) {
             case POKEMONS:
                 SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
-                long rowId = sqLiteDatabase.insert(PokeEntry.TABLE_NAME,null,values);
-                return ContentUris.withAppendedId(uri,rowId);
+                long rowId = sqLiteDatabase.insert(PokeEntry.TABLE_NAME, null, values);
+                return ContentUris.withAppendedId(uri, rowId);
             default:
                 throw new IllegalArgumentException();
 
@@ -100,26 +95,24 @@ public class PokeProvider extends ContentProvider {
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
 
 
-
         int rowsDeleted;
-        switch(uriMatcher.match(uri))
-        {
+        switch (uriMatcher.match(uri)) {
             case POKEMONS:
                 SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
-                rowsDeleted = sqLiteDatabase.delete(PokeEntry.TABLE_NAME,selection,selectionArgs);
+                rowsDeleted = sqLiteDatabase.delete(PokeEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             case POKEMONS_ID:
                 SQLiteDatabase database = dbHelper.getWritableDatabase();
                 selection = PokeEntry._ID + "=?";
-                selectionArgs = new String[] {String.valueOf(ContentUris.parseId(uri))};
-                rowsDeleted = database.delete(PokeEntry.TABLE_NAME,selection,selectionArgs);
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+                rowsDeleted = database.delete(PokeEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             default:
                 throw new IllegalArgumentException();
 
         }
         if (rowsDeleted != 0)
-            getContext().getContentResolver().notifyChange(uri,null);
+            getContext().getContentResolver().notifyChange(uri, null);
         return rowsDeleted;
 
     }

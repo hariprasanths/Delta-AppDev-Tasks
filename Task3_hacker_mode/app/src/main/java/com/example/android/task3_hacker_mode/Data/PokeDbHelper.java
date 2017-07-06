@@ -15,10 +15,10 @@ public class PokeDbHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "pokemons.db";
 
-    public PokeDbHelper(Context context)
-    {
-        super(context,DATABASE_NAME,null,DATABASE_VERSION);
+    public PokeDbHelper(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
+
     @Override
     public void onCreate(SQLiteDatabase db) {
 

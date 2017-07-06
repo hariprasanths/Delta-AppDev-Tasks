@@ -20,17 +20,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/result_textview"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true" />
+
     <TextView
         android:id="@+id/result_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_margin="32dp"
-        android:textSize="24sp"
         android:gravity="left"
-        tools:text="This is what it looks like"/>
-
+        android:textSize="24sp"
+        tools:text="This is what it looks like" />
 
 
     <LinearLayout

@@ -31,7 +31,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 
 
-public class MainActivity extends AppCompatActivity  {
+public class MainActivity extends AppCompatActivity {
 
     TextView resultTextView;
     EditText searchInputBox;
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity  {
     }
 
     void displayResults(String name, int height, int weight, String sprite, String type) {
-        String result = "Name: " + name + "\nHeight: " + height + " feet"+ "\nWeight: " + weight + " lbs"+ "\nTypes: " + type;
+        String result = "Name: " + name + "\nHeight: " + height + " feet" + "\nWeight: " + weight + " lbs" + "\nTypes: " + type;
         resultTextView.setText(result);
         Glide.with(getApplicationContext()).load(sprite).override(500, 500).into(imageView);
         imageView.setVisibility(View.VISIBLE);
@@ -79,16 +79,31 @@ public class MainActivity extends AppCompatActivity  {
         resultTextView.setText(msg);
     }
 
-    void insertPokeIntoDb(String name,String imageurl)
-    {
+    void insertPokeIntoDb(String name, String imageurl) {
         ContentValues values = new ContentValues();
-        values.put(PokeContract.PokeEntry.COLUMN_POKE_NAME,name);
-        values.put(PokeContract.PokeEntry.COLUMN_POKE_IMAGE,imageurl);
-        getContentResolver().insert(PokeContract.CONTENT_URI,values);
+        values.put(PokeContract.PokeEntry.COLUMN_POKE_NAME, name);
+        values.put(PokeContract.PokeEntry.COLUMN_POKE_IMAGE, imageurl);
+        getContentResolver().insert(PokeContract.CONTENT_URI, values);
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main_activity, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.history_button:
+                Intent intent = new Intent(MainActivity.this, History.class);
+                startActivity(intent);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     private class PokemonAsyncTask extends AsyncTask<String, Void, String> {
         @Override
@@ -167,27 +182,8 @@ public class MainActivity extends AppCompatActivity  {
 
                 }
                 displayResults(name, height, weight, sprite, typesName);
-                insertPokeIntoDb(name,sprite);
+                insertPokeIntoDb(name, sprite);
             }
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main_activity,menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch(item.getItemId())
-        {
-            case R.id.history_button:
-                Intent intent = new Intent(MainActivity.this,History.class);
-                startActivity(intent);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }

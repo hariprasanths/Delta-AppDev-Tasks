@@ -62,8 +62,11 @@ public class History extends AppCompatActivity implements LoaderManager.LoaderCa
                         SparseBooleanArray selectedids = pokeCursorAdapter.getSelectedIds();
                         for (int i = (selectedids.size() - 1); i >= 0; i--) {
                             if (selectedids.valueAt(i)) {
-                                currentUri = ContentUris.withAppendedId(PokeContract.CONTENT_URI, selectedids.keyAt(i) + 1);
-                                int j = getContentResolver().delete(currentUri, null, null);
+                                Cursor cursor = (Cursor) pokeCursorAdapter.getItem(selectedids.keyAt(i));
+                                String id = cursor.getString(cursor.getColumnIndex(PokeContract.PokeEntry._ID));
+                                long idl = Long.parseLong(id);
+                                currentUri = ContentUris.withAppendedId(PokeContract.CONTENT_URI,idl);
+                                getContentResolver().delete(currentUri, null, null);
                                 pokeCursorAdapter.notifyDataSetChanged();
                             }
                         }
